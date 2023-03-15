@@ -2,17 +2,15 @@
 
 {% set competitors = craft.entries
     .section('competitors')
+    .with([
+        'image',
+        'country.flag',
+    ])
     .orderBy('score asc')
-    .all()
+    .collect()
 %}
 
-{% set countries = [] %}
-{% for competitor in competitors %}
-    {% set country = competitor.country.one() %}
-    {% if country.id not in countries|map(country => country.id) %}
-        {% set countries = countries|push(country) %}
-    {% endif %}
-{% endfor %}
+{% set countries = competitors.pluck('country').collapse().unique('id') %}
 
 {% set topCompetitors = competitors|slice(0, 5) %}
 {% set topCountries = countries|slice(0, 3) %}
