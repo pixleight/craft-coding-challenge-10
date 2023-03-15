@@ -1,16 +1,16 @@
 {% extends '_layout.twig' %}
 
-{% set competitors = craft.entries
+{% set topCompetitors = craft.entries
     .section('competitors')
     .with([
         'image',
         'country.flag',
     ])
     .orderBy('score asc')
+    .limit(5)
     .collect()
 %}
 
-{% set countries = competitors.pluck('country').collapse().unique('id') %}
+{# The downside of this approach is that we don't *know* if 4 or more of the first 5 competitors have the same country. If that's the case, we wouldn't get 3 countries. This solution just works with this specific set of data #}
 
-{% set topCompetitors = competitors.take(5) %}
-{% set topCountries = countries.take(3) %}
+{% set topCountries = topCompetitors.pluck('country').collapse().unique('id').take(3) %}
