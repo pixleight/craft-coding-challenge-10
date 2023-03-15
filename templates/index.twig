@@ -12,5 +12,5 @@
 
 {% set countries = competitors.pluck('country').collapse().unique('id') %}
 
-{% set topCompetitors = competitors|slice(0, 5) %}
-{% set topCountries = countries|slice(0, 3) %}
+{% set topCompetitors = competitors.take(5) %}
+{% set topCountries = countries.take(3) %}
